@@ -1,24 +1,26 @@
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
-from torchvision.datasets import CIFAR10
+from torchvision.datasets import ImageFolder
 import torch
 import torch.nn as nn
 
 
 def loadData():
     """
-    Load CIFAR10 train and test set
+    Load Alzheimer's train and test set
     """
     transform = transforms.Compose([
+        transforms.CenterCrop(180),
+        transforms.Resize(255),
         transforms.ToTensor(),
         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     ])
-    trainset = CIFAR10("C:/Datasets/CIFAR10", train=True,
-                       download=False, transform=transform)
-    testset = CIFAR10("C:/Datasets/CIFAR10", train=False,
-                      download=False, transform=transform)
-    trainloader = DataLoader(trainset, batch_size=32, shuffle=True)
-    testloader = DataLoader(testset, batch_size=32)
+    trainset = ImageFolder(
+        "C:/Datasets/Alzheimer_s Dataset/train", transform=transform)
+    testset = ImageFolder(
+        "C:/Datasets/Alzheimer_s Dataset/test", transform=transform)
+    trainloader = DataLoader(trainset, batch_size=50, shuffle=True)
+    testloader = DataLoader(testset, batch_size=50, shuffle=True)
     return trainloader, testloader
 
 
