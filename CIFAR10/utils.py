@@ -29,13 +29,21 @@ def train(net, trainLoader, epochs, device):
     """
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+    loss = 0.0
     for _ in range(epochs):
+        correct, total = 0, 0
         for images, labels in trainLoader:
             images, labels = images.to(device), labels.to(device)
             optimizer.zero_grad()
-            loss = criterion(net(images), labels)
+            outputs = net(images)
+            loss = criterion(outputs, labels)
+            _, predicted = torch.max(outputs.data, 1)
+            total += labels.size(0)
+            correct += (predicted == labels).sum().item()
             loss.backward()
             optimizer.step()
+        accuracy = correct/total
+        print("Epoch Accuracy:", accuracy)
 
 
 def test(net, testloader, device):

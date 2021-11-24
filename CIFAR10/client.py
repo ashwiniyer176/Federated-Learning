@@ -37,6 +37,7 @@ class CifarClient(fl.client.NumPyClient):
         2. Trains the local model
         3. Receives the updated local model weights
         """
+        print("Fitting the client model")
         self.set_parameters(parameters)
         train(net, trainLoader, epochs=1, device=DEVICE)
         return self.get_parameters(), len(trainLoader), {}
@@ -45,8 +46,10 @@ class CifarClient(fl.client.NumPyClient):
         """
         Tests the local model
         """
+        print("Evalauating the client model")
         self.set_parameters(parameters)
         loss, accuracy = test(net, testLoader, DEVICE)
+        print("Test Accuracy:", accuracy)
         return float(loss), len(testLoader), {"accuracy": float(accuracy)}
 
 
