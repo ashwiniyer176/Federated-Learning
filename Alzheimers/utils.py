@@ -3,6 +3,7 @@ from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
 import torch
 import torch.nn as nn
+from opacus import PrivacyEngine  # pip install opacus
 
 
 def loadData():
@@ -29,7 +30,16 @@ def train(net, trainLoader, epochs, device):
     Train the network on the training set.
     """
     criterion = nn.CrossEntropyLoss()
+
     optimizer = torch.optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+    privacy_engine = PrivacyEngine(net,
+                                   # batchS-size/length of dataset
+                                   sample_rate=50/len(trainLoader.dataset),
+                                   # length of data
+                                   sample_size=len(trainLoader.dataset),
+                                   noise_multiplier=1.5,  # amount of noise
+                                   max_grad_norm=2.0)
+    privacy_engine.attach(optimizer)
     loss = 0.0
     for _ in range(epochs):
         correct, total = 0, 0

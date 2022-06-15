@@ -7,8 +7,7 @@ from utils import loadData, train, test
 
 import flwr as fl
 
-DEVICE = torch.device(
-    'cuda:0' if torch.cuda.is_available() else 'cpu')
+DEVICE = torch.device('cpu')
 
 
 net = Net().to(DEVICE)
